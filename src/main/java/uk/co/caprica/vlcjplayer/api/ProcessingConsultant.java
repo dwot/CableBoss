@@ -127,7 +127,6 @@ public class ProcessingConsultant {
             count++;
         }
         result += "```";
-        log.info("RESULT:" + result);
         return result;
     }
 
