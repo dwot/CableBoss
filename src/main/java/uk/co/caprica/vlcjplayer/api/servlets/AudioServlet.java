@@ -27,9 +27,15 @@ public class AudioServlet extends HttpServlet {
 
         ProcessingConsultant pds = new ProcessingConsultant();
         String searchQuery = StringUtils.defaultString(request.getParameter("q"));
-        log.info("searchQuery: " + searchQuery);
-        if (NumberUtils.isCreatable(searchQuery)) pds.setAudioTrack(Integer.parseInt(searchQuery));
-        String result = pds.listAudioTracks();
+        String channel = StringUtils.defaultString(request.getParameter("c"));
+        String result = "";
+        if (!pds.allowCall(channel)) {
+            result = "Currently Playing in another channel, sorry!";
+        } else {
+            log.info("searchQuery: " + searchQuery);
+            if (NumberUtils.isCreatable(searchQuery)) pds.setAudioTrack(Integer.parseInt(searchQuery));
+            result = pds.listAudioTracks();
+        }
         response.getWriter().println(result);
 
     }

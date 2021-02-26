@@ -27,8 +27,14 @@ public class SubtitleServlet extends HttpServlet {
         ProcessingConsultant pds = new ProcessingConsultant();
         String searchQuery = StringUtils.defaultString(request.getParameter("q"));
         log.info("searchQuery: " + searchQuery);
-        if (NumberUtils.isCreatable(searchQuery)) pds.setSubTrack(Integer.parseInt(searchQuery));
-        String result = pds.listSubtitleTracks();
+        String channel = StringUtils.defaultString(request.getParameter("c"));
+        String result = "";
+        if (!pds.allowCall(channel)) {
+            result = "Currently Playing in another channel, sorry!";
+        } else {
+            if (NumberUtils.isCreatable(searchQuery)) pds.setSubTrack(Integer.parseInt(searchQuery));
+            result = pds.listSubtitleTracks();
+        }
         response.getWriter().println(result);
     }
 

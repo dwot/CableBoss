@@ -24,8 +24,14 @@ public class ConnectServlet extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
         ProcessingConsultant pds = new ProcessingConsultant();
         String channel = StringUtils.defaultString(request.getParameter("c"));
-        pds.doAhkConnect(channel);
-        response.getWriter().println("{ \"status\": \"connected\"}");
+        String result = "";
+        if (!pds.allowCall(channel)) {
+            result = "Currently Playing in another channel, sorry!";
+        } else {
+            pds.doAhkConnect(channel);
+            result = "connected";
+        }
+        response.getWriter().println("{ \"status\": \"" + result + "\"}");
         
     }
 

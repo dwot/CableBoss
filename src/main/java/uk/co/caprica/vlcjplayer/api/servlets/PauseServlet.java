@@ -1,7 +1,9 @@
 package uk.co.caprica.vlcjplayer.api.servlets;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.co.caprica.vlcjplayer.api.ProcessingConsultant;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,8 +25,16 @@ public class PauseServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_OK);
         log.info("STATUS: " + application().mediaPlayer().status().isPlaying());
-        application().mediaPlayer().controls().pause();
-        response.getWriter().println("{ \"status\": \"paused\"}");
+        String channel = StringUtils.defaultString(request.getParameter("c"));
+        String result = "";
+        ProcessingConsultant pds = new ProcessingConsultant();
+        if (!pds.allowCall(channel)) {
+            result = "Currently Playing in another channel, sorry!";
+        } else {
+            application().mediaPlayer().controls().pause();
+            result = "paused";
+        }
+        response.getWriter().println("{ \"status\": \"" + result + "\"}");
 
     }
 

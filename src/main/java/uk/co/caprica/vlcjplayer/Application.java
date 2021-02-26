@@ -32,6 +32,7 @@ import uk.co.caprica.vlcjplayer.event.TickEvent;
 import uk.co.caprica.vlcjplayer.view.action.mediaplayer.MediaPlayerActions;
 
 import javax.swing.*;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -70,6 +71,10 @@ public final class Application {
 
     private DateTime ytLastStart = new DateTime();
 
+    private ArrayList<String> seriesList = new ArrayList<>();
+    private ArrayList<String> movieList = new ArrayList<>();
+
+    private String currentChannel = "";
 
     /**
      * Video output can be "EMBEDDED" for the usual hardware-accelerated playback, or "CALLBACK" for the software or
@@ -212,5 +217,29 @@ public final class Application {
 
     public void setYtLastStart(DateTime ytLastStart) {
         this.ytLastStart = ytLastStart;
+    }
+
+    public ArrayList<String> getSeriesList() {
+        return seriesList;
+    }
+
+    public void setSeriesList(ArrayList<String> seriesList) {
+        this.seriesList = seriesList;
+    }
+
+    public ArrayList<String> getMovieList() {
+        return movieList;
+    }
+
+    public void setMovieList(ArrayList<String> movieList) {
+        this.movieList = movieList;
+    }
+
+    public String getCurrentChannel() {
+        return currentChannel;
+    }
+
+    public void setCurrentChannel(String currentChannel) {
+        this.currentChannel = currentChannel;
     }
 }

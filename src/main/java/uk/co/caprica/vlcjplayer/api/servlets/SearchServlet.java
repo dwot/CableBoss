@@ -27,7 +27,8 @@ public class SearchServlet extends HttpServlet {
         ProcessingConsultant pds = new ProcessingConsultant();
         String searchQuery = StringUtils.defaultString(request.getParameter("q"));
         log.info("searchQuery: " + searchQuery);
-        String result = pds.doSearch(searchQuery);
+        //String result = pds.doSearch(searchQuery);
+        String result = pds.doFuzzSearch(searchQuery);
         response.getWriter().println(result);
     }
 

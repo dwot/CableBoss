@@ -30,6 +30,9 @@ public class ApiServer {
         props.load(new FileInputStream(propFile));
         application().setProps(props);
 
+        ProcessingConsultant pds = new ProcessingConsultant();
+        pds.buildCaches();
+
         server = new Server();
         ServerConnector connector = new ServerConnector(server);
         connector.setPort(8090);

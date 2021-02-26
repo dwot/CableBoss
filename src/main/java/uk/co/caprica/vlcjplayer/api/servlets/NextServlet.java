@@ -1,5 +1,6 @@
 package uk.co.caprica.vlcjplayer.api.servlets;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co.caprica.vlcjplayer.api.ProcessingConsultant;
@@ -24,18 +25,25 @@ public class NextServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_OK);
         log.info("STATUS: " + application().mediaPlayer().status().isPlaying());
-        String mrl = application().getNextPlaylist();
-        log.info("Play the next file: " + mrl);
-        if (!mrl.equals("")) {
-            application().mediaPlayer().media().play(mrl);
+        String channel = StringUtils.defaultString(request.getParameter("c"));
+        String result = "";
+        ProcessingConsultant pds = new ProcessingConsultant();
+        if (!pds.allowCall(channel)) {
+            result = "Currently Playing in another channel, sorry!";
         } else {
-            //Not playing anymore, let's disconnect.
-            application().mediaPlayer().controls().stop();
-            ProcessingConsultant pds = new ProcessingConsultant();
-            log.info("DISCO FROM NEXT");
-            pds.doAhkDisconnect();
+            String mrl = application().getNextPlaylist();
+            log.info("Play the next file: " + mrl);
+            if (!mrl.equals("")) {
+                application().mediaPlayer().media().play(mrl);
+            } else {
+                //Not playing anymore, let's disconnect.
+                application().mediaPlayer().controls().stop();
+                log.info("DISCO FROM NEXT");
+                pds.doAhkDisconnect();
+                result = "nexted.";
+            }
         }
-        response.getWriter().println("{ \"status\": \"nexted\"}");
+        response.getWriter().println("{ \"status\": \"" + result + "\"}");
         
     }
 
