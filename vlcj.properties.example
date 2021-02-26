@@ -1,0 +1,6 @@
+plexDatabasePath=jdbc:sqlite:C:\\com.plexapp.plugins.library.db
+ahkPath=C:\\Program Files\\AutoHotkey\\AutoHotkey.exe
+scriptPath=C:\\ahkScripts\\
+pathFlipMap={'/plex/media/path/':'X:\\\\\','/plex/media/path2/':'Y:\\\\\'}
+autoConnect=false
+videoChannel=cableboss
