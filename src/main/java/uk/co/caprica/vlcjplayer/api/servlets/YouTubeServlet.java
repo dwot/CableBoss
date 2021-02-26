@@ -32,10 +32,11 @@ public class YouTubeServlet extends HttpServlet {
         if (!ytUrl.equals("") && (ytUrl.contains("youtube.com") || ytUrl.contains("youtu.be"))) {
             application().addRecentMedia(ytUrl);
             log.info("STATUS: " + application().mediaPlayer().status().isPlaying());
+            String channel = StringUtils.defaultString(request.getParameter("c"));
             if (!ytUrl.equals("")) {
                 ProcessingConsultant pds = new ProcessingConsultant();
                 application().setYtLastStart(new DateTime());
-                pds.playFile(ytUrl);
+                pds.playFile(ytUrl, channel);
             } else {
                 status = "NO FILE FOUND";
             }

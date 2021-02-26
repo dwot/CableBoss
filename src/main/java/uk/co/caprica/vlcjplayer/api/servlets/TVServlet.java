@@ -30,7 +30,8 @@ public class TVServlet extends HttpServlet {
         ProcessingConsultant pds = new ProcessingConsultant();
         String tvSearch = StringUtils.defaultString(request.getParameter("q"));
         ArrayList<String> episodes = pds.getTelevision(tvSearch);
-        status = pds.playFile(episodes);
+        String channel = StringUtils.defaultString(request.getParameter("c"));
+        status = pds.playFile(episodes, channel);
         response.getWriter().println("{ \"status\": \"" + status + "\"}");
     }
 

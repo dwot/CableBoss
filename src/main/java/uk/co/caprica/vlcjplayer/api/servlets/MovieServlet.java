@@ -32,8 +32,9 @@ public class MovieServlet extends HttpServlet {
         String mrl = pds.getMovie(movieSearch);
         application().addRecentMedia(mrl);
         log.info("STATUS: " + application().mediaPlayer().status().isPlaying());
+        String channel = StringUtils.defaultString(request.getParameter("c"));
         if (!mrl.equals("")) {
-            pds.playFile(mrl);
+            pds.playFile(mrl, channel);
         } else {
             status = "NO FILE FOUND";
         }

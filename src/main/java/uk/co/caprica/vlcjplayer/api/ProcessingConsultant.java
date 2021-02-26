@@ -313,10 +313,10 @@ public class ProcessingConsultant {
         }
     }
 
-    public void doAhkConnect() {
+    public void doAhkConnect(String channel) {
         if (!application().isStreaming()) {
             try {
-                callAhk("connect.ahk",videoChannel);
+                callAhk("connect.ahk",channel);
             } catch (Exception e) {
                 log.error("ERROR Connecting", e);
             }
@@ -356,20 +356,20 @@ public class ProcessingConsultant {
         application().mediaPlayer().subpictures().setTrack(track);
     }
 
-    public String playFile(String mrl) {
+    public String playFile(String mrl, String channel) {
         ArrayList<String> mrlList = new ArrayList<>();
         mrlList.add(mrl);
-        return playFile(mrlList);
+        return playFile(mrlList, channel);
     }
 
-    public String playFile(ArrayList<String> mrlList) {
+    public String playFile(ArrayList<String> mrlList, String channel) {
         String result = "";
         int count = 0;
         boolean blnAlreadyStarted = false;
         for (String mrl : mrlList) {
             if (!blnAlreadyStarted && !application().mediaPlayer().status().isPlaying()) {
                 log.info("Start Immediately: " + mrl);
-                doAhkConnect();
+                doAhkConnect(channel);
                 try {
                     TimeUnit.SECONDS.sleep(3);
                 } catch (Exception ex) {

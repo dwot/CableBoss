@@ -1,5 +1,6 @@
 package uk.co.caprica.vlcjplayer.api.servlets;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co.caprica.vlcjplayer.api.ProcessingConsultant;
@@ -22,7 +23,8 @@ public class ConnectServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_OK);
         ProcessingConsultant pds = new ProcessingConsultant();
-        pds.doAhkConnect();
+        String channel = StringUtils.defaultString(request.getParameter("c"));
+        pds.doAhkConnect(channel);
         response.getWriter().println("{ \"status\": \"connected\"}");
         
     }
