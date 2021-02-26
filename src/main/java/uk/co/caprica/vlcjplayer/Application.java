@@ -20,6 +20,7 @@
 package uk.co.caprica.vlcjplayer;
 
 import com.google.common.eventbus.EventBus;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co.caprica.vlcj.player.component.CallbackMediaPlayerComponent;
@@ -66,6 +67,8 @@ public final class Application {
     private boolean isStreaming = false;
 
     private Properties props = new Properties();
+
+    private DateTime ytLastStart = new DateTime();
 
 
     /**
@@ -201,5 +204,13 @@ public final class Application {
 
     public void setProps(Properties props) {
         this.props = props;
+    }
+
+    public DateTime getYtLastStart() {
+        return ytLastStart;
+    }
+
+    public void setYtLastStart(DateTime ytLastStart) {
+        this.ytLastStart = ytLastStart;
     }
 }

@@ -76,7 +76,7 @@ public class VlcjPlayer implements RendererDiscovererEventListener {
 //            nativeStreams = new NativeStreams("stdout.log", "stderr.log");
 //        }
 //        else {
-        nativeStreams = null;
+            nativeStreams = null;
 //        }
     }
 
@@ -121,13 +121,14 @@ public class VlcjPlayer implements RendererDiscovererEventListener {
             apiServer.start();
         } catch (Exception e) {
             System.out.println("ERROR STARTING server:" + e.getLocalizedMessage());
+            e.printStackTrace();
         }
 
 //        SwingUtilities.invokeLater(new Runnable() {
 //            @Override
 //            public void run() {
-        app = new VlcjPlayer();
-        app.start();
+                app = new VlcjPlayer();
+                app.start();
 //            }
 //        });
     }

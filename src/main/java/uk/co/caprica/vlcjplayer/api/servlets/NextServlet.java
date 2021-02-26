@@ -32,6 +32,7 @@ public class NextServlet extends HttpServlet {
             //Not playing anymore, let's disconnect.
             application().mediaPlayer().controls().stop();
             ProcessingConsultant pds = new ProcessingConsultant();
+            log.info("DISCO FROM NEXT");
             pds.doAhkDisconnect();
         }
         response.getWriter().println("{ \"status\": \"nexted\"}");

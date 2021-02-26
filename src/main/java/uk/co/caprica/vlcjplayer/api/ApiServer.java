@@ -4,6 +4,8 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletHandler;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
@@ -23,6 +25,7 @@ public class ApiServer {
     public void start() throws Exception {
         //Load Properties
         String propFile = System.getProperty("VLCJ_PROP_FILE");
+        System.out.println("propFile: " + propFile);
         Properties props = new Properties();
         props.load(new FileInputStream(propFile));
         application().setProps(props);
@@ -63,8 +66,16 @@ public class ApiServer {
                             mediaPlayer.media().play(mrl);
                         } else {
                             //Not playing anymore, let's disconnect.
-                            ProcessingConsultant pds = new ProcessingConsultant();
-                            pds.doAhkDisconnect();
+                            DateTime currTime = new DateTime();
+                            Duration duration = new Duration(application().getYtLastStart(), currTime);
+                            if (duration.getStandardSeconds() > 10) {
+                                ProcessingConsultant pds = new ProcessingConsultant();
+                                log.info("DISCO FROM API SERVER");
+                                pds.doAhkDisconnect();
+                            } else {
+                                log.info("STARTED YOUTUBE less than 10 s ago, keep rolling");
+                            }
+
                         }
                     }
                 });

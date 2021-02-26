@@ -27,6 +27,7 @@ public class ClearServlet extends HttpServlet {
         application().clearPlayList();
         application().mediaPlayer().controls().stop();
         ProcessingConsultant pds = new ProcessingConsultant();
+        log.info("DISCO FROM CLEAR");
         pds.doAhkDisconnect();
         response.getWriter().println("{ \"status\": \"stopped & cleared\"}");
         

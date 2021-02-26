@@ -9,13 +9,12 @@ import uk.co.caprica.vlcj.player.base.TrackDescription;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -282,11 +281,24 @@ public class ProcessingConsultant {
         return result;
     }
 
-    public void callAhk(String script) throws IOException, InterruptedException {
+    public void callAhk(String script, String arg) throws IOException, InterruptedException {
         if (Boolean.parseBoolean(StringUtils.defaultString(application().getProps().getProperty("autoConnect"), "false)"))) {
-            Runtime.getRuntime().exec(new String[]{ahkPath, scriptPath + script});
+            log.info("ahk: " + ahkPath);
+            log.info("script: " + scriptPath + script);
+            log.info("arg: " + arg);
+            Runtime.getRuntime().exec(new String[]{ahkPath, scriptPath + script, arg});
             Thread.currentThread();
             Thread.sleep(1000);
+        }
+    }
+
+    public void callAhk(String script) throws IOException, InterruptedException {
+        if (Boolean.parseBoolean(StringUtils.defaultString(application().getProps().getProperty("autoConnect"), "false)"))) {
+            log.info("ahk: " + ahkPath);
+            log.info("script: " + scriptPath + script);
+            Runtime.getRuntime().exec(new String[]{ahkPath, scriptPath + script});
+            Thread.currentThread();
+            Thread.sleep(3000);
         }
     }
 
@@ -304,7 +316,7 @@ public class ProcessingConsultant {
     public void doAhkConnect() {
         if (!application().isStreaming()) {
             try {
-                callAhk("connect.ahk " + videoChannel);
+                callAhk("connect.ahk",videoChannel);
             } catch (Exception e) {
                 log.error("ERROR Connecting", e);
             }
@@ -342,5 +354,38 @@ public class ProcessingConsultant {
 
     public void setSubTrack(int track) {
         application().mediaPlayer().subpictures().setTrack(track);
+    }
+
+    public String playFile(String mrl) {
+        ArrayList<String> mrlList = new ArrayList<>();
+        mrlList.add(mrl);
+        return playFile(mrlList);
+    }
+
+    public String playFile(ArrayList<String> mrlList) {
+        String result = "";
+        int count = 0;
+        boolean blnAlreadyStarted = false;
+        for (String mrl : mrlList) {
+            if (!blnAlreadyStarted && !application().mediaPlayer().status().isPlaying()) {
+                log.info("Start Immediately: " + mrl);
+                doAhkConnect();
+                try {
+                    TimeUnit.SECONDS.sleep(3);
+                } catch (Exception ex) {
+                    log.error("ERROR WAITING:", ex);
+                }
+                application().mediaPlayer().media().play(mrl);
+                blnAlreadyStarted = true;
+                count++;
+            } else {
+                log.info("Enqueue: " + mrl);
+                application().enqueueItem(mrl);
+                blnAlreadyStarted = true;
+                count++;
+            }
+        }
+        result = String.valueOf(count) + " items added to the playlist, total playlist size: " + (application().getPlaylist().size()+1);
+        return result;
     }
 }

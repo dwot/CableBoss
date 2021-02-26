@@ -33,16 +33,7 @@ public class MovieServlet extends HttpServlet {
         application().addRecentMedia(mrl);
         log.info("STATUS: " + application().mediaPlayer().status().isPlaying());
         if (!mrl.equals("")) {
-            if (!application().mediaPlayer().status().isPlaying()) {
-                pds.doAhkConnect();
-                log.info("Start Movie Immediately: " + mrl);
-                application().mediaPlayer().media().play(mrl);
-                status = "Movie started.";
-            } else {
-                log.info("Enqueue Movie: " + mrl);
-                application().enqueueItem(mrl);
-                status = "Movie added to queue (#" + application().getPlaylist().size() + ").";
-            }
+            pds.playFile(mrl);
         } else {
             status = "NO FILE FOUND";
         }

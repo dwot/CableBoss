@@ -1,8 +1,10 @@
 package uk.co.caprica.vlcjplayer.api.servlets;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.co.caprica.vlcjplayer.api.ProcessingConsultant;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -31,15 +33,9 @@ public class YouTubeServlet extends HttpServlet {
             application().addRecentMedia(ytUrl);
             log.info("STATUS: " + application().mediaPlayer().status().isPlaying());
             if (!ytUrl.equals("")) {
-                if (!application().mediaPlayer().status().isPlaying()) {
-                    log.info("Start Movie Immediately: " + ytUrl);
-                    application().mediaPlayer().media().play(ytUrl);
-                    status = "YouTube started.";
-                } else {
-                    log.info("Enqueue Movie: " + ytUrl);
-                    application().enqueueItem(ytUrl);
-                    status = "YouTube added to queue (#" + application().getPlaylist().size() + ").";
-                }
+                ProcessingConsultant pds = new ProcessingConsultant();
+                application().setYtLastStart(new DateTime());
+                pds.playFile(ytUrl);
             } else {
                 status = "NO FILE FOUND";
             }

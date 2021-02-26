@@ -30,30 +30,7 @@ public class TVServlet extends HttpServlet {
         ProcessingConsultant pds = new ProcessingConsultant();
         String tvSearch = StringUtils.defaultString(request.getParameter("q"));
         ArrayList<String> episodes = pds.getTelevision(tvSearch);
-        int count = 0;
-        if (episodes.size() > 0) {
-            boolean blnAlreadyStarted = false;
-            for (String mrl : episodes) {
-                if (!mrl.equals("")) {
-                    //application().addRecentMedia(mrl);
-                    log.info("STATUS: " + application().mediaPlayer().status().isPlaying());
-                    if (!blnAlreadyStarted && !application().mediaPlayer().status().isPlaying()) {
-                        log.info("Start TV Immediately: " + mrl);
-                        pds.doAhkConnect();
-                        application().mediaPlayer().media().play(mrl);
-                        blnAlreadyStarted = true;
-                        count++;
-                    } else {
-                        log.info("Enqueue TV: " + mrl);
-                        application().enqueueItem(mrl);
-                        blnAlreadyStarted = true;
-                        count++;
-                    }
-                }
-            }
-            status = String.valueOf(count) + " TV episodes added. (#" + application().getPlaylist().size() + ")";
-        }
-
+        status = pds.playFile(episodes);
         response.getWriter().println("{ \"status\": \"" + status + "\"}");
     }
 
