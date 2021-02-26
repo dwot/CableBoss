@@ -109,8 +109,8 @@ public class ProcessingConsultant {
     public String doFuzzSearch(String query) {
         String result = "";
         //Search Movies
-        List<ExtractedResult> fuzzyList = FuzzySearch.extractSorted(query, application().getMovieList(), 65);
-        result += "MOVIES \n```";
+        List<ExtractedResult> fuzzyList = FuzzySearch.extractSorted(query, application().getMovieList());
+        result += "MOVIES\n```\n";
         int count = 0;
         for (ExtractedResult fuzzy : fuzzyList) {
             log.info("Query: " + query + " Result: " + fuzzy.getString() + " (Fuzzy Confidence: " + fuzzy.getScore() + ")");
@@ -118,8 +118,8 @@ public class ProcessingConsultant {
             count++;
         }
         //Search TV
-        fuzzyList = FuzzySearch.extractSorted(query, application().getSeriesList(), 65);
-        result += "```SERIES \n```";
+        fuzzyList = FuzzySearch.extractSorted(query, application().getSeriesList());
+        result += "```\nSERIES\n```\n";
         count = 0;
         for (ExtractedResult fuzzy : fuzzyList) {
             log.info("Query: " + query + " Result: " + fuzzy.getString() + " (Fuzzy Confidence: " + fuzzy.getScore() + ")");
@@ -127,6 +127,7 @@ public class ProcessingConsultant {
             count++;
         }
         result += "```";
+        log.info("RESULT:" + result);
         return result;
     }
 
