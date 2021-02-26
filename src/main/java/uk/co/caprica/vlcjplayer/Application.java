@@ -20,11 +20,10 @@
 package uk.co.caprica.vlcjplayer;
 
 import com.google.common.eventbus.EventBus;
-import uk.co.caprica.vlcj.player.base.MediaPlayer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.co.caprica.vlcj.player.component.CallbackMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
-import uk.co.caprica.vlcj.player.component.callback.FilledCallbackImagePainter;
-import uk.co.caprica.vlcj.player.component.callback.FixedCallbackImagePainter;
 import uk.co.caprica.vlcj.player.component.callback.ScaledCallbackImagePainter;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.renderer.RendererItem;
@@ -41,6 +40,8 @@ import java.util.concurrent.TimeUnit;
  * Global application state.
  */
 public final class Application {
+
+    final static Logger log = LoggerFactory.getLogger(Application.class);
 
     private static final String RESOURCE_BUNDLE_BASE_NAME = "strings/vlcj-player";
 
@@ -59,6 +60,13 @@ public final class Application {
     private final ScheduledExecutorService tickService = Executors.newSingleThreadScheduledExecutor();
 
     private final Deque<String> recentMedia = new ArrayDeque<>(MAX_RECENT_MEDIA_SIZE);
+
+    private final Deque<String> playlist = new ArrayDeque<>();
+
+    private boolean isStreaming = false;
+
+    private Properties props = new Properties();
+
 
     /**
      * Video output can be "EMBEDDED" for the usual hardware-accelerated playback, or "CALLBACK" for the software or
@@ -161,4 +169,37 @@ public final class Application {
         mediaPlayerComponent.mediaPlayer().setRenderer(renderer);
     }
 
+    public Deque<String> getPlaylist()  { return playlist; }
+
+    public void clearPlayList() { playlist.clear(); }
+
+    public void enqueueItem(String mrl) {
+        log.info("enqueueItem");
+        playlist.addLast(mrl);
+    }
+
+    public String getNextPlaylist(){
+        log.info("getNextPlayList");
+        String result = "";
+        if (playlist.size() > 0) {
+            result = playlist.removeFirst();
+        }
+        return result;
+    }
+
+    public boolean isStreaming() {
+        return isStreaming;
+    }
+
+    public void setStreaming(boolean streaming) {
+        isStreaming = streaming;
+    }
+
+    public Properties getProps() {
+        return props;
+    }
+
+    public void setProps(Properties props) {
+        this.props = props;
+    }
 }

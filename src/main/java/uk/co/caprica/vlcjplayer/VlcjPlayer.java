@@ -35,6 +35,7 @@ import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.log.NativeLog;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.fullscreen.exclusivemode.ExclusiveModeFullScreenStrategy;
+import uk.co.caprica.vlcjplayer.api.ApiServer;
 import uk.co.caprica.vlcjplayer.event.AfterExitFullScreenEvent;
 import uk.co.caprica.vlcjplayer.event.BeforeEnterFullScreenEvent;
 import uk.co.caprica.vlcjplayer.event.RendererAddedEvent;
@@ -75,7 +76,7 @@ public class VlcjPlayer implements RendererDiscovererEventListener {
 //            nativeStreams = new NativeStreams("stdout.log", "stderr.log");
 //        }
 //        else {
-            nativeStreams = null;
+        nativeStreams = null;
 //        }
     }
 
@@ -114,12 +115,19 @@ public class VlcjPlayer implements RendererDiscovererEventListener {
         }
 
         setLookAndFeel();
+        System.out.println("DONE WITH L&F");
+        ApiServer apiServer = new ApiServer();
+        try {
+            apiServer.start();
+        } catch (Exception e) {
+            System.out.println("ERROR STARTING server:" + e.getLocalizedMessage());
+        }
 
 //        SwingUtilities.invokeLater(new Runnable() {
 //            @Override
 //            public void run() {
-                app = new VlcjPlayer();
-                app.start();
+        app = new VlcjPlayer();
+        app.start();
 //            }
 //        });
     }
