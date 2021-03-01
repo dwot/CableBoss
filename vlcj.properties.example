@@ -1,10 +1,35 @@
+#Full Path to AutoHotKey executable, including executable name
 ahkPath=C:\\Program Files\\AutoHotkey\\AutoHotkey.exe
+
+#Full Path to where ahk scripts from source were copied to
 scriptPath=C:\\ahkScripts\\
+
+#Path mapping for remote file paths from Plex API to local file paths on playback machine
+#For Example if plex is on linux and finds files at: '/plex/media/path/
+#We mount this path on windows playback machine and translate that prefix to: 'X:\'
+#{'/plex/media/path/':'X:\\\\\'}
+#Need to fix up the wacky escaping of the slashes
 pathFlipMap={'/plex/media/path/':'X:\\\\\','/plex/media/path2/':'Y:\\\\\'}
+
+#If set true, will engage AutoHotKey to join / disconnect from channel / start & stop stream
+#If false, must be manually connected and streaming
 autoConnect=false
+
+#URL to the plex server for API Calls
 plexBaseUrl=http://localhost:32400/
+
+#Plex Token for API calls, see https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
 plexToken=
+
+#Plex Library Id to be considered movies and tv
+#plexBaseURL + "/library/sections/all?X-Plex-Token=" + plexToken
+# The id we are using shows as "key".
 plexMovieSections=1
 plexTvSections=2,4
+
+#Build your bot, get a token to log it in
+#https://discord.com/developers/applications
 discordToken=
+
+#The keyword prefix to trigger your bot
 discordTrigger=!cable
