@@ -1,9 +1,10 @@
 package uk.co.caprica.vlcjplayer.api.servlets;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.co.caprica.vlcjplayer.api.ProcessingConsultant;
+import uk.co.caprica.vlcjplayer.api.consultant.ProcessingConsultant;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -34,7 +35,7 @@ public class PauseServlet extends HttpServlet {
             application().mediaPlayer().controls().pause();
             result = "paused";
         }
-        response.getWriter().println("{ \"status\": \"" + result + "\"}");
+        response.getWriter().println("{ \"status\": \"" + StringEscapeUtils.escapeJson(result) + "\"}");
 
     }
 

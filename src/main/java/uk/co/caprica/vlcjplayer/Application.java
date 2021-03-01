@@ -28,9 +28,11 @@ import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.component.callback.ScaledCallbackImagePainter;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.renderer.RendererItem;
+import uk.co.caprica.vlcjplayer.api.model.MediaItem;
 import uk.co.caprica.vlcjplayer.event.TickEvent;
 import uk.co.caprica.vlcjplayer.view.action.mediaplayer.MediaPlayerActions;
 
+import javax.print.attribute.standard.Media;
 import javax.swing.*;
 import java.lang.reflect.Array;
 import java.util.*;
@@ -63,7 +65,7 @@ public final class Application {
 
     private final Deque<String> recentMedia = new ArrayDeque<>(MAX_RECENT_MEDIA_SIZE);
 
-    private final Deque<String> playlist = new ArrayDeque<>();
+    private final Deque<MediaItem> playlist = new ArrayDeque<>();
 
     private boolean isStreaming = false;
 
@@ -73,6 +75,7 @@ public final class Application {
 
     private ArrayList<String> seriesList = new ArrayList<>();
     private ArrayList<String> movieList = new ArrayList<>();
+    private MediaItem nowPlaying = new MediaItem();
 
     private String currentChannel = "";
 
@@ -177,18 +180,18 @@ public final class Application {
         mediaPlayerComponent.mediaPlayer().setRenderer(renderer);
     }
 
-    public Deque<String> getPlaylist()  { return playlist; }
+    public Deque<MediaItem> getPlaylist()  { return playlist; }
 
     public void clearPlayList() { playlist.clear(); }
 
-    public void enqueueItem(String mrl) {
+    public void enqueueItem(MediaItem mrl) {
         log.info("enqueueItem");
         playlist.addLast(mrl);
     }
 
-    public String getNextPlaylist(){
+    public MediaItem getNextPlaylist(){
         log.info("getNextPlayList");
-        String result = "";
+        MediaItem result = new MediaItem();
         if (playlist.size() > 0) {
             result = playlist.removeFirst();
         }
@@ -241,5 +244,13 @@ public final class Application {
 
     public void setCurrentChannel(String currentChannel) {
         this.currentChannel = currentChannel;
+    }
+
+    public MediaItem getNowPlaying() {
+        return nowPlaying;
+    }
+
+    public void setNowPlaying(MediaItem nowPlaying) {
+        this.nowPlaying = nowPlaying;
     }
 }

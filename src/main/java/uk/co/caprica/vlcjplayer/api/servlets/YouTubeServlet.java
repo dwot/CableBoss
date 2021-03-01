@@ -1,13 +1,13 @@
 package uk.co.caprica.vlcjplayer.api.servlets;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.co.caprica.vlcjplayer.api.ProcessingConsultant;
+import uk.co.caprica.vlcjplayer.api.consultant.ProcessingConsultant;
 import uk.co.caprica.vlcjplayer.api.model.MediaItem;
 
-import javax.print.attribute.standard.Media;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +50,7 @@ public class YouTubeServlet extends HttpServlet {
                 }
             }
         }
-        response.getWriter().println("{ \"status\": \"" + result + "\"}");
+        response.getWriter().println("{ \"status\": \"" + StringEscapeUtils.escapeJson(result) + "\"}");
     }
 
 }

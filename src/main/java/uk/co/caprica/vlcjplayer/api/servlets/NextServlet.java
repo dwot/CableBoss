@@ -1,9 +1,11 @@
 package uk.co.caprica.vlcjplayer.api.servlets;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.co.caprica.vlcjplayer.api.ProcessingConsultant;
+import uk.co.caprica.vlcjplayer.api.consultant.ProcessingConsultant;
+import uk.co.caprica.vlcjplayer.api.model.MediaItem;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -31,19 +33,9 @@ public class NextServlet extends HttpServlet {
         if (!pds.allowCall(channel)) {
             result = "Currently Playing in another channel, sorry!";
         } else {
-            String mrl = application().getNextPlaylist();
-            log.info("Play the next file: " + mrl);
-            if (!mrl.equals("")) {
-                application().mediaPlayer().media().play(mrl);
-            } else {
-                //Not playing anymore, let's disconnect.
-                application().mediaPlayer().controls().stop();
-                log.info("DISCO FROM NEXT");
-                pds.doAhkDisconnect();
-                result = "nexted.";
-            }
+            result = pds.playNext(application().mediaPlayer());
         }
-        response.getWriter().println("{ \"status\": \"" + result + "\"}");
+        response.getWriter().println("{ \"status\": \"" + StringEscapeUtils.escapeJson(result) + "\"}");
         
     }
 

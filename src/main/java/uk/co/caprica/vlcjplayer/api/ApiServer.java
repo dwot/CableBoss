@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
+import uk.co.caprica.vlcjplayer.api.consultant.ProcessingConsultant;
+import uk.co.caprica.vlcjplayer.api.model.MediaItem;
 import uk.co.caprica.vlcjplayer.api.servlets.*;
 
 import java.io.FileInputStream;
@@ -54,6 +56,7 @@ public class ApiServer {
         servletHandler.addServletWithMapping(ConnectServlet.class, "/connect");
         servletHandler.addServletWithMapping(AudioServlet.class, "/audio");
         servletHandler.addServletWithMapping(SubtitleServlet.class, "/subtitle");
+        servletHandler.addServletWithMapping(PlaylistServlet.class, "/playlist");
 
         server.start();
 
@@ -63,23 +66,8 @@ public class ApiServer {
                 mediaPlayer.submit(new Runnable() {
                     @Override
                     public void run() {
-                        String mrl = application().getNextPlaylist();
-                        log.info("Play the next file: " + mrl);
-                        if (!mrl.equals("")) {
-                            mediaPlayer.media().play(mrl);
-                        } else {
-                            //Not playing anymore, let's disconnect.
-                            DateTime currTime = new DateTime();
-                            Duration duration = new Duration(application().getYtLastStart(), currTime);
-                            if (duration.getStandardSeconds() > 10) {
-                                ProcessingConsultant pds = new ProcessingConsultant();
-                                log.info("DISCO FROM API SERVER");
-                                pds.doAhkDisconnect();
-                            } else {
-                                log.info("STARTED YOUTUBE less than 10 s ago, keep rolling");
-                            }
-
-                        }
+                        ProcessingConsultant pds = new ProcessingConsultant();
+                        String result = pds.playNext(mediaPlayer);
                     }
                 });
             }
