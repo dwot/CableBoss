@@ -19,11 +19,7 @@
 
 package uk.co.caprica.vlcjplayer;
 
-import com.sun.jna.NativeLibrary;
 import uk.co.caprica.nativestreams.NativeStreams;
-import uk.co.caprica.vlcj.binding.LibC;
-import uk.co.caprica.vlcj.player.base.MediaPlayer;
-import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.component.CallbackMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.renderer.RendererDiscoverer;
 import uk.co.caprica.vlcj.player.renderer.RendererDiscovererDescription;
@@ -33,11 +29,7 @@ import uk.co.caprica.vlcj.support.Info;
 import uk.co.caprica.vlcj.binding.RuntimeUtil;
 import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.log.NativeLog;
-import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
-import uk.co.caprica.vlcj.player.embedded.fullscreen.exclusivemode.ExclusiveModeFullScreenStrategy;
-import uk.co.caprica.vlcjplayer.api.ApiServer;
-import uk.co.caprica.vlcjplayer.event.AfterExitFullScreenEvent;
-import uk.co.caprica.vlcjplayer.event.BeforeEnterFullScreenEvent;
+import uk.co.caprica.vlcjplayer.api.BotServer;
 import uk.co.caprica.vlcjplayer.event.RendererAddedEvent;
 import uk.co.caprica.vlcjplayer.event.RendererDeletedEvent;
 import uk.co.caprica.vlcjplayer.event.ShutdownEvent;
@@ -116,13 +108,8 @@ public class VlcjPlayer implements RendererDiscovererEventListener {
 
         setLookAndFeel();
         System.out.println("DONE WITH L&F");
-        ApiServer apiServer = new ApiServer();
-        try {
-            apiServer.start();
-        } catch (Exception e) {
-            System.out.println("ERROR STARTING server:" + e.getLocalizedMessage());
-            e.printStackTrace();
-        }
+        BotServer botServer = new BotServer();
+        botServer.start();
 
 //        SwingUtilities.invokeLater(new Runnable() {
 //            @Override

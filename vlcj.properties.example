@@ -6,3 +6,5 @@ plexBaseUrl=http://localhost:32400/
 plexToken=
 plexMovieSections=1
 plexTvSections=2,4
+discordToken=
+discordTrigger=!cable
