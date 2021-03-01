@@ -6,7 +6,7 @@ This is a forked version of [vlcj-player](https://github.com/caprica/vlcj-player
 This bot listens for commands from discord messages to search for and playback 
 media in a Plex library or playback a youtube video and stream this on discord.
 
-This is done with by running on a dedicated PC using a dedicated discord (non-bot) user and using AutoHotKey scripts to 
+This is done with a dedicated PC using a dedicated discord (non-bot) user and using AutoHotKey scripts to 
 join channels & start / stop streaming.
 
 It's wonky frankenstein of a thing.  It is severely limited without official support for streaming from discord bots.
