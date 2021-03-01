@@ -175,6 +175,28 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                    <shadedClassifierName>shaded</shadedClassifierName>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>uk.co.caprica.vlcjplayer.VlcjPlayer</mainClass>
+                        </transformer>
+                    </transformers>
+                </configuration>
+            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -269,6 +291,8 @@
             <artifactId>JDA</artifactId>
             <version>4.2.0_168</version>
         </dependency>
+
+
     </dependencies>
 
     <repositories>
@@ -278,5 +302,4 @@
         <url>https://jcenter.bintray.com</url>
     </repository>
     </repositories>
-
 </project>

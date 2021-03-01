@@ -25,7 +25,7 @@ To get this to work
 4. Unzip to location on the Player PC. This will unpack the vlcj jars as well as all the dependency jars. 
 5. Copy ahkScripts from source to somewhere on path (should add to build and dist)
 6. Create a vlcj.properties file, see vlcj.properties.example
-7.  Run VLCJ via bat file ```java "-DVLCJ_PROP_FILE=vlcj.properties" -jar "vlcj-player-2.0.0-SNAPSHOT.jar" ```
+7.  Run VLCJ via bat file ```java "-DVLCJ_PROP_FILE=vlcj.properties" -jar "vlcj-player-2.0.0-SNAPSHOT-shaded.jar" ```
      Fully qualify the paths to the jar and properties if they give you grief.
 8. VLCJ takes a minute or so to become reponsive (via GUI) this seems normal, let it do it's thing.
 9. Establish a keybind in discord on the player for Toggle Screen Share, set this to Ctrl+Shift+G (hardcoded in AHK

@@ -58,8 +58,12 @@ public class MessageListener extends ListenerAdapter {
             argString = argString.trim();
             log.info("Command: " + command);
             log.info("argString: "+ argString);
-            log.info("Voice Channel: " + voiceChannel.getName());
-            
+            String vChannel = "";
+            if (voiceChannel != null && voiceChannel.getName() != null) {
+                vChannel = voiceChannel.getName();
+            }
+            log.info("Voice Channel: " + vChannel);
+
             if (command.equals("play")) command = "resume";
             if (command.equals("sub")) command = "subtitle";
             if (command.equals("yt")) command = "youtube";
@@ -99,7 +103,7 @@ public class MessageListener extends ListenerAdapter {
                 }
             } else if (privCommands.contains(command)) {
                 if (voiceChannel != null) {
-                    if (pds.allowCall(voiceChannel.getName())) {
+                    if (pds.allowCall(vChannel)) {
                         if (command.equals("audio")) {
                             if (NumberUtils.isCreatable(argString)) pds.setAudioTrack(Integer.parseInt(argString));
                             event.getTextChannel().sendMessage("```" + pds.listAudioTracks() + "```").queue();
@@ -110,7 +114,7 @@ public class MessageListener extends ListenerAdapter {
                             event.getTextChannel().sendMessage("```stopped and cleared```").queue();
                         } else if (command.equals("movie")) {
                             ArrayList<PlaylistItem> media = plex.getMovie(argString);
-                            event.getTextChannel().sendMessage("```" + pds.playFile(media, voiceChannel.getName()) + "```").queue();
+                            event.getTextChannel().sendMessage("```" + pds.playFile(media, vChannel) + "```").queue();
                         } else if (command.equals("next")) {
                             event.getTextChannel().sendMessage("```" + pds.playNext(application().mediaPlayer()) + "```").queue();
                         } else if (command.equals("pause")) {
@@ -124,14 +128,14 @@ public class MessageListener extends ListenerAdapter {
                             event.getTextChannel().sendMessage("```" + pds.listSubtitleTracks() + "```").queue();
                         } else if (command.equals("tv")) {
                             ArrayList<PlaylistItem> episodes = plex.getTelevision(argString);
-                            event.getTextChannel().sendMessage("```" + pds.playFile(episodes, voiceChannel.getName()) + "```").queue();
+                            event.getTextChannel().sendMessage("```" + pds.playFile(episodes, vChannel) + "```").queue();
                         } else if (command.equals("youtube")) {
                             if (!argString.equals("") && (argString.contains("youtube.com") || argString.contains("youtu.be"))) {
                                 application().setYtLastStart(new DateTime());
                                 PlaylistItem media = new PlaylistItem();
                                 media.setMrl(argString);
                                 media.setTitle("YOUTUBE VIDEO");
-                                pds.playFile(media, voiceChannel.getName());
+                                pds.playFile(media, vChannel);
                                 event.getTextChannel().sendMessage("```Playing Youtube```").queue();
                             } else {
                                 event.getTextChannel().sendMessage("```Invalid Youtube URL```").queue();
