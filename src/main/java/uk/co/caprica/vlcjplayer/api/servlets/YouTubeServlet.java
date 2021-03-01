@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co.caprica.vlcjplayer.api.consultant.ProcessingConsultant;
-import uk.co.caprica.vlcjplayer.api.model.MediaItem;
+import uk.co.caprica.vlcjplayer.api.model.PlaylistItem;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -40,7 +40,7 @@ public class YouTubeServlet extends HttpServlet {
                 log.info("STATUS: " + application().mediaPlayer().status().isPlaying());
                 if (!ytUrl.equals("")) {
                     application().setYtLastStart(new DateTime());
-                    MediaItem media = new MediaItem();
+                    PlaylistItem media = new PlaylistItem();
                     media.setMrl(ytUrl);
                     media.setTitle("YOUTUBE VIDEO");
                     pds.playFile(media, channel);

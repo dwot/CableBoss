@@ -5,7 +5,6 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co.caprica.vlcjplayer.api.consultant.ProcessingConsultant;
-import uk.co.caprica.vlcjplayer.api.model.MediaItem;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

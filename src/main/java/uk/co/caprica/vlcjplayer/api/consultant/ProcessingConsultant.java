@@ -1,7 +1,5 @@
 package uk.co.caprica.vlcjplayer.api.consultant;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import org.apache.commons.lang3.StringUtils;
@@ -11,17 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.TrackDescription;
-import uk.co.caprica.vlcjplayer.api.model.MediaItem;
+import uk.co.caprica.vlcjplayer.api.model.PlaylistItem;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static uk.co.caprica.vlcjplayer.Application.application;
 
@@ -32,7 +25,7 @@ public class ProcessingConsultant {
     String scriptPath = application().getProps().getProperty("scriptPath");
 
     public void buildCaches() {
-        PlexSqlDataStore plex = new PlexSqlDataStore();
+        PlexApiDataStore plex = new PlexApiDataStore();
         application().setMovieList(plex.buildMovieCache());
         application().setSeriesList(plex.buildSeriesCache());
     }
@@ -40,7 +33,7 @@ public class ProcessingConsultant {
     public String doFuzzSearch(String query) {
         String result = "";
         //Search Movies
-        List<ExtractedResult> fuzzyList = FuzzySearch.extractSorted(query, application().getMovieList(), 70);
+        List<ExtractedResult> fuzzyList = FuzzySearch.extractSorted(query, application().getMovieList().values(), 70);
         result += "MOVIES\n";
         int count = 0;
         for (ExtractedResult fuzzy : fuzzyList) {
@@ -51,7 +44,7 @@ public class ProcessingConsultant {
         if (count > 20) result += " and " + (count - 20) + " more.\n";
         if (count == 0) result += "No Movies Found\n";
         //Search TV
-        fuzzyList = FuzzySearch.extractSorted(query, application().getSeriesList(), 70);
+        fuzzyList = FuzzySearch.extractSorted(query, application().getSeriesList().values(), 70);
         result += "\nSERIES\n";
         count = 0;
         for (ExtractedResult fuzzy : fuzzyList) {
@@ -141,17 +134,17 @@ public class ProcessingConsultant {
         application().mediaPlayer().subpictures().setTrack(track);
     }
 
-    public String playFile(MediaItem media, String channel) {
-        ArrayList<MediaItem> mediaList = new ArrayList<>();
+    public String playFile(PlaylistItem media, String channel) {
+        ArrayList<PlaylistItem> mediaList = new ArrayList<>();
         mediaList.add(media);
         return playFile(mediaList, channel);
     }
 
-    public String playFile(ArrayList<MediaItem> mediaList, String channel) {
+    public String playFile(ArrayList<PlaylistItem> mediaList, String channel) {
         String result = "";
         int count = 0;
         boolean blnAlreadyStarted = false;
-        for (MediaItem media : mediaList) {
+        for (PlaylistItem media : mediaList) {
             String mrl = media.getMrl();
             if (!blnAlreadyStarted && !application().mediaPlayer().status().isPlaying()) {
                 log.info("Start Immediately: " + mrl);
@@ -163,8 +156,9 @@ public class ProcessingConsultant {
                     log.error("ERROR WAITING:", ex);
                 }
                 application().mediaPlayer().media().play(mrl);
+                log.info("VOLUME IS : " + application().mediaPlayer().audio().volume());
+                //application().mediaPlayer().audio().setVolume(application().mediaPlayer().audio().volume() + delta);
             } else {
-                log.info("Enqueue: " + mrl);
                 application().enqueueItem(media);
             }
             blnAlreadyStarted = true;
@@ -189,7 +183,7 @@ public class ProcessingConsultant {
     public String listPlaylist() {
         String result = "";
         int count = 0;
-        for (MediaItem media : application().getPlaylist()) {
+        for (PlaylistItem media : application().getPlaylist()) {
             if (count < 10) result += media.getTitle() + "\n";
             count++;
         }
@@ -199,7 +193,7 @@ public class ProcessingConsultant {
     }
 
     public String playNext(MediaPlayer mediaPlayer) {
-        MediaItem media = application().getNextPlaylist();
+        PlaylistItem media = application().getNextPlaylist();
         String mrl = media.getMrl();
         log.info("Play the next file: " + mrl);
         if (!mrl.equals("")) {

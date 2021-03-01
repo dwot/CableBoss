@@ -4,9 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.co.caprica.vlcjplayer.api.consultant.PlexSqlDataStore;
+import uk.co.caprica.vlcjplayer.api.consultant.PlexApiDataStore;
 import uk.co.caprica.vlcjplayer.api.consultant.ProcessingConsultant;
-import uk.co.caprica.vlcjplayer.api.model.MediaItem;
+import uk.co.caprica.vlcjplayer.api.model.PlaylistItem;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,15 +29,18 @@ public class TVServlet extends HttpServlet {
         String status = "";
 
         ProcessingConsultant pds = new ProcessingConsultant();
-        PlexSqlDataStore plex = new PlexSqlDataStore();
+        //PlexSqlDataStore plex = new PlexSqlDataStore();
+        PlexApiDataStore plex = new PlexApiDataStore();
         String tvSearch = StringUtils.defaultString(request.getParameter("q"));
         String channel = StringUtils.defaultString(request.getParameter("c"));
         String result = "";
         if (!pds.allowCall(channel)) {
             result = "Currently Playing in another channel, sorry!";
         } else {
-            ArrayList<MediaItem> episodes = plex.getTelevision(tvSearch);
+            ArrayList<PlaylistItem> episodes = plex.getTelevision(tvSearch);
+            log.info("LIST OF TV : " + episodes.size());
             result = pds.playFile(episodes, channel);
+
         }
         response.getWriter().println("{ \"status\": \"" + StringEscapeUtils.escapeJson(result) + "\"}");
     }

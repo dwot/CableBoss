@@ -20,6 +20,8 @@
 package uk.co.caprica.vlcjplayer;
 
 import com.google.common.eventbus.EventBus;
+import org.apache.commons.collections4.BidiMap;
+import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +30,11 @@ import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.component.callback.ScaledCallbackImagePainter;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.renderer.RendererItem;
-import uk.co.caprica.vlcjplayer.api.model.MediaItem;
+import uk.co.caprica.vlcjplayer.api.model.PlaylistItem;
 import uk.co.caprica.vlcjplayer.event.TickEvent;
 import uk.co.caprica.vlcjplayer.view.action.mediaplayer.MediaPlayerActions;
 
-import javax.print.attribute.standard.Media;
 import javax.swing.*;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -65,7 +65,7 @@ public final class Application {
 
     private final Deque<String> recentMedia = new ArrayDeque<>(MAX_RECENT_MEDIA_SIZE);
 
-    private final Deque<MediaItem> playlist = new ArrayDeque<>();
+    private final Deque<PlaylistItem> playlist = new ArrayDeque<>();
 
     private boolean isStreaming = false;
 
@@ -73,9 +73,9 @@ public final class Application {
 
     private DateTime ytLastStart = new DateTime();
 
-    private ArrayList<String> seriesList = new ArrayList<>();
-    private ArrayList<String> movieList = new ArrayList<>();
-    private MediaItem nowPlaying = new MediaItem();
+    private DualHashBidiMap<String, String> seriesList = new DualHashBidiMap<>();
+    private DualHashBidiMap<String, String> movieList = new DualHashBidiMap<>();
+    private PlaylistItem nowPlaying = new PlaylistItem();
 
     private String currentChannel = "";
 
@@ -180,18 +180,16 @@ public final class Application {
         mediaPlayerComponent.mediaPlayer().setRenderer(renderer);
     }
 
-    public Deque<MediaItem> getPlaylist()  { return playlist; }
+    public Deque<PlaylistItem> getPlaylist()  { return playlist; }
 
     public void clearPlayList() { playlist.clear(); }
 
-    public void enqueueItem(MediaItem mrl) {
-        log.info("enqueueItem");
+    public void enqueueItem(PlaylistItem mrl) {
         playlist.addLast(mrl);
     }
 
-    public MediaItem getNextPlaylist(){
-        log.info("getNextPlayList");
-        MediaItem result = new MediaItem();
+    public PlaylistItem getNextPlaylist(){
+        PlaylistItem result = new PlaylistItem();
         if (playlist.size() > 0) {
             result = playlist.removeFirst();
         }
@@ -222,22 +220,6 @@ public final class Application {
         this.ytLastStart = ytLastStart;
     }
 
-    public ArrayList<String> getSeriesList() {
-        return seriesList;
-    }
-
-    public void setSeriesList(ArrayList<String> seriesList) {
-        this.seriesList = seriesList;
-    }
-
-    public ArrayList<String> getMovieList() {
-        return movieList;
-    }
-
-    public void setMovieList(ArrayList<String> movieList) {
-        this.movieList = movieList;
-    }
-
     public String getCurrentChannel() {
         return currentChannel;
     }
@@ -246,11 +228,27 @@ public final class Application {
         this.currentChannel = currentChannel;
     }
 
-    public MediaItem getNowPlaying() {
+    public PlaylistItem getNowPlaying() {
         return nowPlaying;
     }
 
-    public void setNowPlaying(MediaItem nowPlaying) {
+    public void setNowPlaying(PlaylistItem nowPlaying) {
         this.nowPlaying = nowPlaying;
+    }
+
+    public DualHashBidiMap<String, String> getSeriesList() {
+        return seriesList;
+    }
+
+    public void setSeriesList(DualHashBidiMap<String, String> seriesList) {
+        this.seriesList = seriesList;
+    }
+
+    public DualHashBidiMap<String, String> getMovieList() {
+        return movieList;
+    }
+
+    public void setMovieList(DualHashBidiMap<String, String> movieList) {
+        this.movieList = movieList;
     }
 }

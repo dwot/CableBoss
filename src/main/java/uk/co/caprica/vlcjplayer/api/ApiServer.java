@@ -4,14 +4,12 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletHandler;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
+import uk.co.caprica.vlcjplayer.api.consultant.PlexApiDataStore;
 import uk.co.caprica.vlcjplayer.api.consultant.ProcessingConsultant;
-import uk.co.caprica.vlcjplayer.api.model.MediaItem;
 import uk.co.caprica.vlcjplayer.api.servlets.*;
 
 import java.io.FileInputStream;
