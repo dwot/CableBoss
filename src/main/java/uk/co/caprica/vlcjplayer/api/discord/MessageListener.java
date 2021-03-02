@@ -104,6 +104,7 @@ public class MessageListener extends ListenerAdapter {
             } else if (privCommands.contains(command)) {
                 if (voiceChannel != null) {
                     if (pds.allowCall(vChannel)) {
+                        application().setLastChannel(msg.getChannel());
                         if (command.equals("audio")) {
                             if (NumberUtils.isCreatable(argString)) pds.setAudioTrack(Integer.parseInt(argString));
                             event.getTextChannel().sendMessage("```" + pds.listAudioTracks() + "```").queue();

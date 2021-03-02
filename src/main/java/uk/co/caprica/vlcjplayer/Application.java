@@ -20,6 +20,7 @@
 package uk.co.caprica.vlcjplayer;
 
 import com.google.common.eventbus.EventBus;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.joda.time.DateTime;
@@ -78,12 +79,21 @@ public final class Application {
     private PlaylistItem nowPlaying = new PlaylistItem();
 
     private String currentChannel = "";
+    private MessageChannel lastChannel;
 
     /**
      * Video output can be "EMBEDDED" for the usual hardware-accelerated playback, or "CALLBACK" for the software or
      * "direct-rendering" approach.
      */
     private VideoOutput videoOutput = VideoOutput.CALLBACK;
+
+    public void setLastChannel(MessageChannel lastChannel) {
+        this.lastChannel = lastChannel;
+    }
+
+    public MessageChannel getLastChannel() {
+        return lastChannel;
+    }
 
     private static final class ApplicationHolder {
         private static final Application INSTANCE = new Application();
