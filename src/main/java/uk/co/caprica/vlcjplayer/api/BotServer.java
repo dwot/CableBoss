@@ -3,6 +3,9 @@ package uk.co.caprica.vlcjplayer.api;
 import com.google.common.eventbus.Subscribe;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Message;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,8 +64,62 @@ public class BotServer {
         tickProcess();
     }
 
+
     private void tickProcess() {
-        LocalDateTime time = new LocalDateTime();
-        //log.info("TICK:" + time);
+        int inactiveTimer = 10; //10
+        int lastCommandMax = 180; //180
+        int pauseMax = 30; //30
+
+        if (application().isStreaming()) {
+            DateTime time = new DateTime();
+            if (application().getWarnMessage() != null && !application().getWarnMessage().equals("")) {
+                ProcessingConsultant pds = new ProcessingConsultant();
+                if (application().getWarnStarted() != null && application().getPauseStarted() != null) {
+                    //Warning has been sent and we are paused
+                    Duration warnedAgo = new Duration(application().getWarnStarted(), time);
+                    Duration pausedAgo = new Duration(application().getPauseStarted(), time);
+                    if (warnedAgo.getStandardMinutes() > inactiveTimer && pausedAgo.getStandardMinutes() > inactiveTimer) {
+                        log.info("Warned Ago: " + warnedAgo.getStandardMinutes());
+                        log.info("Paused Ago: " + pausedAgo.getStandardMinutes());
+                        pds.disconnectPlayback();
+                    }
+                } else if (application().getWarnStarted() != null) {
+                    //Warned but not paused
+                    Duration warnedAgo = new Duration(application().getWarnStarted(), time);
+                    if (warnedAgo.getStandardMinutes() > inactiveTimer) {
+                        log.info("Warned Ago: " + warnedAgo.getStandardMinutes());
+                        pds.pausePlayback();
+                    }
+                }
+            } else {
+                boolean blnSendWarning = false;
+                if (application().getLastCommand() != null) {
+                    Duration duration = new Duration(application().getLastCommand(), time);
+                    if (duration.getStandardMinutes() > lastCommandMax) {
+                        blnSendWarning = true;
+                        log.info("OVER TIMED: " + application().getLastCommand());
+                    }
+                }
+                if (application().getPauseStarted() != null) {
+                    Duration duration = new Duration(application().getPauseStarted(), time);
+                    if (duration.getStandardMinutes() > pauseMax) {
+                        blnSendWarning = true;
+                        log.info("OVER PAUSED: " + application().getPauseStarted());
+                    }
+
+                }
+                if (blnSendWarning) {
+                    log.info("WARNING");
+                    String notice = "Hey, still watching?  If so react ✔️ or I'll disconnect in 15 mins.";
+                    if (application().getLastChannel() != null) {
+                        application().setWarnMessage(application().getLastChannel().sendMessage(notice).complete().getId());
+                        Message message = application().getLastChannel().retrieveMessageById(application().getWarnMessage()).complete();
+                        message.addReaction("✔️").queue();
+                        message.addReaction("❌").queue();
+                    }
+                    application().setWarnStarted(time);
+                }
+            }
+        }
     }
 }

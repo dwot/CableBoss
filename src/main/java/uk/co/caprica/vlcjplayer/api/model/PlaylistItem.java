@@ -5,6 +5,9 @@ public class PlaylistItem {
 	private String title;
 	private String mrl;
 	private String year;
+	private String type;
+	private String series;
+	private String epicode;
 
 	public String getTitle() {
 		return title;
@@ -28,5 +31,29 @@ public class PlaylistItem {
 
 	public void setYear(String year) {
 		this.year = year;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getSeries() {
+		return series;
+	}
+
+	public void setSeries(String series) {
+		this.series = series;
+	}
+
+	public String getEpicode() {
+		return epicode;
+	}
+
+	public void setEpicode(String epicode) {
+		this.epicode = epicode;
 	}
 }

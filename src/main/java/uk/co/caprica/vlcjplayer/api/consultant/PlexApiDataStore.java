@@ -157,9 +157,11 @@ public class PlexApiDataStore {
             //File targetFile = new File("series-dump.json");
             //FileUtils.copyInputStreamToFile(source, targetFile);
             PlexLibrary library  = new Gson().fromJson(jsonReader, PlexLibrary.class);
+            String series = library.getMediaContainer().getParentTitle();
             for (MetadataItem item : library.getMediaContainer().getMetadata()) {
                 int episodeNumber = item.getIndex();
                 int seasonNumber = item.getParentIndex();
+                String episode = "S" + seasonNumber + "E" + episodeNumber;
                 boolean blnInclude = true;
                 if (requestedSeason >= 0) {
                     if (requestedSeason == seasonNumber) {
@@ -178,6 +180,9 @@ public class PlexApiDataStore {
                             PlaylistItem media = new PlaylistItem();
                             media.setMrl(movieFile);
                             media.setTitle(item.getTitle());
+                            media.setEpicode(episode);
+                            media.setSeries(series);
+                            media.setType("tv");
                             mediaList.add(media);
                         }
                     }

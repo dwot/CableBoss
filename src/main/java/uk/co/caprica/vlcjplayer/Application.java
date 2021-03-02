@@ -72,14 +72,19 @@ public final class Application {
 
     private Properties props = new Properties();
 
-    private DateTime ytLastStart = new DateTime();
+    private DateTime ytLastStart = null;
+    private DateTime lastCommand = new DateTime();
+    private DateTime pauseStarted = null;
+    private DateTime warnStarted = null;
 
     private DualHashBidiMap<String, String> seriesList = new DualHashBidiMap<>();
     private DualHashBidiMap<String, String> movieList = new DualHashBidiMap<>();
     private PlaylistItem nowPlaying = new PlaylistItem();
 
     private String currentChannel = "";
+    private String warnMessage = "";
     private MessageChannel lastChannel;
+
 
     /**
      * Video output can be "EMBEDDED" for the usual hardware-accelerated playback, or "CALLBACK" for the software or
@@ -260,5 +265,37 @@ public final class Application {
 
     public void setMovieList(DualHashBidiMap<String, String> movieList) {
         this.movieList = movieList;
+    }
+
+    public DateTime getLastCommand() {
+        return lastCommand;
+    }
+
+    public void setLastCommand(DateTime lastCommand) {
+        this.lastCommand = lastCommand;
+    }
+
+    public DateTime getPauseStarted() {
+        return pauseStarted;
+    }
+
+    public void setPauseStarted(DateTime pauseStarted) {
+        this.pauseStarted = pauseStarted;
+    }
+
+    public DateTime getWarnStarted() {
+        return warnStarted;
+    }
+
+    public void setWarnStarted(DateTime warnStarted) {
+        this.warnStarted = warnStarted;
+    }
+
+    public String getWarnMessage() {
+        return warnMessage;
+    }
+
+    public void setWarnMessage(String warnMessage) {
+        this.warnMessage = warnMessage;
     }
 }

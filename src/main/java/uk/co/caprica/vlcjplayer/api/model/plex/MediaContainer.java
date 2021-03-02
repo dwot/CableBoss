@@ -53,6 +53,9 @@ public class MediaContainer{
 	@SerializedName("librarySectionTitle")
 	private String librarySectionTitle;
 
+	@SerializedName("parentTitle")
+	private String parentTitle;
+
 
 	public String getMediaTagPrefix(){
 		return mediaTagPrefix;
@@ -116,5 +119,9 @@ public class MediaContainer{
 
 	public List<DirectoryItem> getDirectory() {
 		return directory;
+	}
+
+	public String getParentTitle() {
+		return parentTitle;
 	}
 }

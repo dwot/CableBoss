@@ -4,7 +4,9 @@ import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.RestAction;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -30,15 +32,6 @@ public class MessageListener extends ListenerAdapter {
     final static Logger log = LoggerFactory.getLogger(MessageListener.class);
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-
-        if (event.isFromType(ChannelType.PRIVATE)) {
-            log.info(String.format("[PM] %s: %s", event.getAuthor().getName(),
-                    event.getMessage().getContentDisplay()));
-        } else {
-            log.info(String.format("[%s][%s] %s: %s", event.getGuild().getName(),
-                    event.getTextChannel().getName(), event.getMember().getEffectiveName(),
-                    event.getMessage().getContentDisplay()));
-        }
 
         Message msg = event.getMessage();
         if (msg.getContentRaw().startsWith(discordTrigger)) {
@@ -105,6 +98,9 @@ public class MessageListener extends ListenerAdapter {
                 if (voiceChannel != null) {
                     if (pds.allowCall(vChannel)) {
                         application().setLastChannel(msg.getChannel());
+                        application().setLastCommand(new DateTime());
+                        application().setWarnMessage("");
+                        application().setWarnStarted(null);
                         if (command.equals("audio")) {
                             if (NumberUtils.isCreatable(argString)) pds.setAudioTrack(Integer.parseInt(argString));
                             event.getTextChannel().sendMessage("```" + pds.listAudioTracks() + "```").queue();
@@ -120,8 +116,10 @@ public class MessageListener extends ListenerAdapter {
                             event.getTextChannel().sendMessage("```" + pds.playNext(application().mediaPlayer()) + "```").queue();
                         } else if (command.equals("pause")) {
                             application().mediaPlayer().controls().pause();
+                            application().setPauseStarted(new DateTime());
                             event.getTextChannel().sendMessage("```paused```").queue();
                         } else if (command.equals("resume")) {
+                            application().setPauseStarted(null);
                             application().mediaPlayer().controls().play();
                             event.getTextChannel().sendMessage("```resumed```").queue();
                         } else if (command.equals("subtitle")) {
@@ -152,6 +150,30 @@ public class MessageListener extends ListenerAdapter {
                 event.getTextChannel().sendMessage("```Sorry I don\'t know what to do with that. Try " + discordTrigger +" help```").queue();
             }
             
+        }
+
+    }
+
+    @Override
+    public void onMessageReactionAdd(MessageReactionAddEvent event) {
+        log.info("Reaction: " + event.getReaction());
+        Message msg = event.getChannel().retrieveMessageById(event.getMessageId()).complete();
+        if (msg.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) {
+            log.info("Someone reacted to my msg: " + event.getReaction());
+            if (msg.getId().equals(application().getWarnMessage()) &&
+                    !event.getMember().getId().equals(event.getJDA().getSelfUser().getId())) {
+                if (event.getReactionEmote().getEmoji().equals("✔️")) {
+                    log.info("Warn Message Checked");
+                    ProcessingConsultant pds = new ProcessingConsultant();
+                    pds.continuePlayback();
+                } else if (event.getReactionEmote().getEmoji().equals("❌")) {
+                    log.info("Warn Message x'd");
+                    ProcessingConsultant pds = new ProcessingConsultant();
+                    pds.disconnectPlayback();
+                } else {
+                    log.info("Reaction was: " + event.getReactionEmote().getEmoji());
+                }
+            }
         }
 
     }

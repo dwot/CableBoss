@@ -148,7 +148,15 @@ public class ProcessingConsultant {
             String mrl = media.getMrl();
             if (!blnAlreadyStarted && !application().mediaPlayer().status().isPlaying()) {
                 log.info("Start Immediately: " + mrl);
-                result = "\nPlaying: " + media.getTitle() + "\n";
+
+                if (media.getType().equals("tv")) {
+                    result = media.getSeries() + " - " + media.getEpicode() + " - " + media.getTitle();
+                } else if (media.getType().equals("movie")) {
+                    result = media.getTitle() + " (" + media.getYear() + ")";
+                } else {
+                    result = media.getTitle();
+                }
+                result += "\n";
                 doAhkConnect(channel);
                 try {
                     TimeUnit.SECONDS.sleep(3);
@@ -210,6 +218,44 @@ public class ProcessingConsultant {
                 log.info("STARTED YOUTUBE less than 10 s ago, keep rolling");
             }
         }
-        return("Playing: " + media.getTitle());
+        String result = "";
+        if (media.getType().equals("tv")) {
+            result = media.getSeries() + " - " + media.getEpicode() + " - " + media.getTitle();
+        } else if (media.getType().equals("movie")) {
+            result = media.getTitle() + " (" + media.getYear() + ")";
+        } else {
+            result = media.getTitle();
+        }
+        return("Playing: " + result);
     }
+
+    public void continuePlayback() {
+        log.info("CONTINUE");
+        application().getLastChannel().sendMessage("Timeout reset, enjoy!").queue();
+        application().setWarnMessage("");
+        application().setLastCommand(new DateTime());
+        if (application().getPauseStarted() != null) application().mediaPlayer().controls().play();
+        application().setPauseStarted(null);
+        application().setWarnStarted(null);
+    }
+
+    public void disconnectPlayback() {
+        log.info("DISCONNECTING");
+        application().clearPlayList();
+        application().mediaPlayer().controls().stop();
+        doAhkDisconnect();
+        application().getLastChannel().sendMessage("Disconnected due to inactivity.").queue();
+        application().setWarnMessage("");
+        application().setLastCommand(null);
+        application().setPauseStarted(null);
+        application().setWarnStarted(null);
+    }
+
+    public void pausePlayback() {
+        log.info("PAUSE");
+        application().mediaPlayer().controls().pause();
+        application().setPauseStarted(new DateTime());
+        application().getLastChannel().sendMessage("Paused due to inactivity.").queue();
+    }
+
 }
