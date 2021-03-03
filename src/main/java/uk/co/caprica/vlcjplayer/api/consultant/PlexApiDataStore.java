@@ -108,6 +108,10 @@ public class PlexApiDataStore {
                         PlaylistItem media = new PlaylistItem();
                         media.setMrl(movieFile);
                         media.setTitle(item.getTitle());
+                        media.setEpicode("");
+                        media.setSeries("");
+                        media.setType("movie");
+                        media.setYear(String.valueOf(item.getYear()));
                         mediaList.add(media);
                     }
                 }
